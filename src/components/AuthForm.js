@@ -3,11 +3,11 @@ import React, { useState } from "react";
 import Spacer from "./Spacer";
 import { Text, Input, Button } from "react-native-elements";
 
-const AuthForm = ({ onSubmit, errorMessage, title }) => {
+const AuthForm = ({ onSubmit, errorMessage, title, onSubmitTitle }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
-    <View>
+    <>
       <Spacer>
         <Text h3>{title}</Text>
       </Spacer>
@@ -31,9 +31,12 @@ const AuthForm = ({ onSubmit, errorMessage, title }) => {
         <Text style={styles.errorMessage}>{errorMessage}</Text>
       ) : null}
       <Spacer />
-      <Button onPress={() => onSubmit({ email, password })} title="Sign Up" />
+      <Button
+        onPress={() => onSubmit({ email, password })}
+        title={onSubmitTitle}
+      />
       <Spacer />
-    </View>
+    </>
   );
 };
 
