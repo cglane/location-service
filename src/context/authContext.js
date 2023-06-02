@@ -10,8 +10,7 @@ const authReducer = (state, action) => {
       return { errorMessage: "", token: action.payload };
     case "signout":
       return { ...state, token: null };
-    case "clear_error_message":
-      console.log("auth reducer");
+    case "clear_error_message":      
       return { ...state, errorMessage: "" };
     default:
       return state;
@@ -25,7 +24,6 @@ const tryLocalSignin = (dispatch) => async () => {
   }
 };
 const clearErrorMessage = (dispatch) => () => {
-  console.log("clear erro message");
   dispatch({ type: "clear_error_message" });
 };
 
@@ -34,12 +32,10 @@ const signup =
   async ({ email, password }) => {
     try {
       const response = await trackerApi.post("/signup", { email, password });
-      console.log(response.data);
       await AsyncStorage.setItem("token", response.data.token);
       dispatch({ type: "signin", payload: response.data.token });
       navigate("TrackList");
     } catch (err) {
-      console.log(err);
       dispatch({ type: "add_error", payload: "Something went wrong!" });
     }
   };
@@ -49,12 +45,10 @@ const signin =
   async ({ email, password }) => {
     try {
       const response = await trackerApi.post("/signin", { email, password });
-      console.log(response.data);
       await AsyncStorage.setItem("token", response.data.token);
       dispatch({ type: "signin", payload: response.data.token });
       navigate("TrackList");
     } catch (err) {
-      console.log(err);
       dispatch({ type: "add_error", payload: "Something went wrong!" });
     }
   };
@@ -65,7 +59,6 @@ const signout = (dispatch) => async () => {
     dispatch({ type: "signout" });
     navigate("Signin");
   } catch (err) {
-    console.log(err, "err");
     dispatch({ type: "add_error", payload: "Something went wrong!" });
   }
 };

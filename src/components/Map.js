@@ -1,35 +1,42 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import MapView, { Polyline } from "react-native-maps";
-const Map = () => {
-  let points = [];
-  for (let i = 0; i < 20; i++) {
-    if (i % 2 == 0) {
-      points.push({
-        latitude: 37.32233 + i * 0.002,
-        longitude: -122.03121 + i * 0.001,
-      });
-    } else {
-      points.push({
-        latitude: 37.32233 - i * 0.002,
-        longitude: -122.03121 - i * 0.002,
-      });
-    }
-  }
 
-  return (
-    <MapView
-      style={styles.map}
-      initialRegion={{
-        latitude: 37.32233,
-        longitude: -122.03121,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      }}
-    >
-      <Polyline coordinates={points} />
-    </MapView>
-  );
+import React, { useContext } from "react";
+import MapView, { Polyline, Circle } from "react-native-maps";
+import { Context as LocationContext } from "../context/locationContext";
+import { ActivityIndicator } from "react-native-paper";
+
+const Map = () => {
+  const {
+    state: { currentLocation },
+  } = useContext(LocationContext);
+  if (!currentLocation) {
+    return <ActivityIndicator size="large" style={{ margingTop: 200 }} />;
+  } else {
+    return (
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          ...currentLocation.coords,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        }}
+        // Continues to update
+        // region={{
+        //   ...currentLocation.coords,
+        //   latitudeDelta: 0.01,
+        //   longitudeDelta: 0.01,
+        // }}
+      >
+        <Circle
+          center={currentLocation.coords}
+          // Meters
+          radius={50}
+          strokeColor="rgba(150, 158, 255, 1.0)"
+          fillColor="rgba(158, 158, 255, 0.3)"
+        ></Circle>
+      </MapView>
+    );
+  }
 };
 
 export default Map;
@@ -37,6 +44,6 @@ export default Map;
 const styles = StyleSheet.create({
   map: {
     height: 300,
-    width: 300,
+    width: "100%",
   },
 });

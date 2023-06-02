@@ -1,35 +1,39 @@
-import { StyleSheet, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Text, Input, Button } from "react-native-elements";
+import { StyleSheet } from "react-native";
+import React, { useContext } from "react";
+import { Context as LocationContext } from "../context/locationContext";
+import { Text } from "react-native-elements";
 import Map from "../components/Map";
-import { SafeAreaView } from "react-navigation";
+import {
+  SafeAreaView,
+  NavigationEvents,
+  withNavigationFocus,
+} from "react-navigation";
 import Spacer from "../components/Spacer";
-import { requestForegroundPermissionsAsync } from "expo-location";
+import useLocation from "../hooks/useLocation";
+import TrackForm from "../components/TrackForm";
 
-const TrackCreateScreen = () => {
-  const [err, setErr] = useState(null)
-  const startWatching = async () => {
-    try {
-      const { granted } = await requestForegroundPermissionsAsync();
+const TrackCreateScreen = ({ isFocused }) => {
+  const { addLocation, state } = useContext(LocationContext);
+  const [err] = useLocation(isFocused, state.recording, (location) => {
+    addLocation(location, state.recording);
+  });
 
-      if (!granted) {
-        throw new Error("Location permission not granted");
-      }
-    } catch (e) {
-      setErr(e);
-    }
-  };
-  useEffect(() => {startWatching()}, []);
   return (
-    <SafeAreaView forceInset={{ top: "always" }}>
+    <SafeAreaView forceInset={{ top: "always" }} style={styles.wrapper}>
       <Spacer />
-      <Text>TrackCreateScreen</Text>
+      <Text h2>TrackCreateScreen</Text>
       <Map />
-      {err ? <Text>Please Enable Location Services</Text>: null}
+      {err ? <Text>Please Enable Location Services</Text> : null}
+      <TrackForm />
     </SafeAreaView>
   );
 };
 
-export default TrackCreateScreen;
+export default withNavigationFocus(TrackCreateScreen);
 
-const styles = StyleSheet.create();
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    justifyContent: "flex-start",
+  },
+});
