@@ -7,7 +7,7 @@ import { ActivityIndicator } from "react-native-paper";
 
 const Map = () => {
   const {
-    state: { currentLocation },
+    state: { currentLocation, locations },
   } = useContext(LocationContext);
   if (!currentLocation) {
     return <ActivityIndicator size="large" style={{ margingTop: 200 }} />;
@@ -34,6 +34,7 @@ const Map = () => {
           strokeColor="rgba(150, 158, 255, 1.0)"
           fillColor="rgba(158, 158, 255, 0.3)"
         ></Circle>
+        <Polyline coordinates={locations.map((loc) => loc.coords)} />
       </MapView>
     );
   }
